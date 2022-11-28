@@ -1,4 +1,5 @@
-function Today() {
+function Today({weatherData}) {
+    console.log(weatherData);
     return (
         <div className="weatherToday flex flex-col m-auto">
             <h1 className="mb-3 mt-7 self-center uppercase">Nom de la ville</h1>
