@@ -1,20 +1,34 @@
 import React from "react";
 import {useState} from "react";
-import {Navigate} from "react-router-dom";
 import Today from "./today";
+
 function InputCity() {
-    const apiKey = "7cdb2da670a898001f3a2349b387802d";
-    const [weatherData, SetWeatherData] = useState([{}]);
     const [City, setCity] = useState("");
+    const [weatherData, SetWeatherData] = useState([]);
+    const [cityImage, setCityImage] = useState("");
     const getWeather = (event) => {
+        const weatherKey = "7cdb2da670a898001f3a2349b387802d";
+        const unsplashKey = "t26Ea15HOjQ0Az4CT6WDI606QUdIa9Ad18bmr1XenjA";
         if (event.key == "Enter") {
             fetch(
-                `https://api.openweathermap.org/data/2.5/weather?q=${City}&units=metric&APPID=${apiKey}`,
+                `https://api.openweathermap.org/data/2.5/forecast?q=${City}&units=metric&APPID=${weatherKey}`,
             )
                 .then((response) => response.json())
                 .then((data) => {
-                    SetWeatherData(data);
                     setCity("");
+                    for (let i = 0; i < data.list.length; i += 8) {
+                        SetWeatherData((weatherData) => [
+                            ...weatherData,
+                            data.list[i],
+                        ]);
+                    }
+                });
+            fetch(
+                `https://api.unsplash.com/search/photos?query=${City}&per_page=20&client_id=${unsplashKey}`,
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    setCityImage(data.results[0].urls.full);
                 });
         }
     };
@@ -28,10 +42,10 @@ function InputCity() {
                 onKeyPress={getWeather}
                 value={City}
             />
-            {typeof weatherData.main === "undefined" ? (
+            {weatherData.length === 0 ? (
                 <p>Please Enter a city</p>
             ) : (
-                <Today weatherData={weatherData} />
+                <Today weatherData={weatherData} cityImage={cityImage} />
             )}
         </div>
     );
