@@ -1,4 +1,5 @@
 import React from "react";
+import {useEffect} from "react";
 import {useState} from "react";
 import Today from "./today";
 
@@ -32,6 +33,18 @@ function InputCity() {
                 });
         }
     };
+    useEffect(() => {
+        window.localStorage.removeItem("LSKEY-WeatherApp");
+        window.localStorage.removeItem("LSKEY-ImageApp");
+        window.localStorage.setItem(
+            "LSKEY-WeatherApp",
+            JSON.stringify(weatherData),
+        );
+        window.localStorage.setItem(
+            "LSKEY-ImageApp",
+            JSON.stringify(cityImage),
+        );
+    }, [weatherData]);
     return (
         <div>
             {" "}
